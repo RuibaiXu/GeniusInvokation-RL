@@ -1,0 +1,5 @@
+# 忽略Python编译的缓存文件
+__pycache__/
+
+# 忽略log目录
+log/
