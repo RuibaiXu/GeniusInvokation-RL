@@ -8,7 +8,8 @@ from torch.utils.tensorboard import SummaryWriter
 from lpsim import Match, Deck
 from lpsim.agents import RandomAgent
 from lpsim.network import HTTPServer
-from RLAgent_old import RLAgent
+# from RLMatch import RLMatch
+from RLAgent import RLAgent
 
 import numpy as np
 import collections
@@ -25,16 +26,16 @@ GAMMA = 0.98               # reward的折扣因子
 BATCH_SIZE = 64
 # BATCH_SIZE = 16
 LR = 0.00025
-ACTION_DIM = 16
+ACTION_DIM = 20
 STATE_DIM = 16
 
-EACH_STEP_REWARD = -0.05
-EACH_ROUND_REWARD = -5
+EACH_STEP_REWARD = -0.01
+EACH_ROUND_REWARD = -3
 WIN_REWARD = 100
 
-MODEL_PATH = 'log/lpsim/DQN/ckpt/25000.pth'
+MODEL_PATH = 'log/lpsim/DQN_newActionSpace/ckpt/15000.pth'
 SAVING_IETRATION = 1000    # 保存Checkpoint的间隔
-SAVE_PATH_PREFIX = './log/lpsim/DQN/'
+SAVE_PATH_PREFIX = './log/lpsim/DQN_newActionSpace/'
 TEST = False
 # TEST = True
 
@@ -200,6 +201,7 @@ def main():
         ep_reward = 0
 
         match = Match()
+        # match = RLMatch()
 
         match.set_deck([deck0, deck1])
 
@@ -241,9 +243,10 @@ def main():
                 new_round_number = match.round_number
                 
                 action_tensor = rlDQN.get_action_tensor(state_tensor).to(device) # 获取动作
-                reqs_count = len([x for x in match.requests if x.player_idx == 0])
-                do_action_tensor = action_tensor[:reqs_count] # 根据match.requests的长度进行截断
-                response, action_index = agent_0.generate_response(match, do_action_tensor, EPSILON) # 生成回应
+                ## 无需截断，由generate_response处理
+                # reqs_count = len([x for x in match.requests if x.player_idx == 0])
+                # do_action_tensor = action_tensor[:reqs_count] # 根据match.requests的长度进行截断
+                response, action_index = agent_0.generate_response(match, action_tensor, EPSILON) # 生成回应
                 match.respond(response) # 做出动作
                 match.step()
 

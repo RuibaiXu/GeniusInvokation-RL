@@ -8,7 +8,7 @@ from torch.utils.tensorboard import SummaryWriter
 from lpsim import Match, Deck
 from lpsim.agents import RandomAgent
 from lpsim.network import HTTPServer
-from RLAgent import RLAgent
+from RLAgent_old import RLAgent
 
 import numpy as np
 import collections
